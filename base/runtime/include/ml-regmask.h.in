@@ -1,0 +1,21 @@
+/*
+ * ml-regmask.h
+ *
+ * COPYRIGHT (c) 2019 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *
+ * NOTE: this file is generated --- do not edit!!!
+ */
+
+#ifndef _REG_MASK_
+#define _REG_MASK_
+
+#define CALLEESAVE       @CALLEESAVE@
+#define FLOAT_CALLEESAVE @FLOAT_CALLEESAVE@
+
+#define FUN_MASK  @FUN_MASK@
+#define RET_MASK  @RET_MASK@
+#define CONT_MASK @CONT_MASK@
+#define EXN_MASK  @EXN_MASK@
+
+#endif /* !_REG_MASK_ */

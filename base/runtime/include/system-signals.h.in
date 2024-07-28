@@ -1,0 +1,23 @@
+/*
+ * system-signals.h
+ *
+ * COPYRIGHT (c) 2019 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *
+ * NOTE: this file is generated --- do not edit!!!
+ */
+
+#ifndef _SYSTEM_SIGNALS_
+#define _SYSTEM_SIGNALS_
+
+#define NUM_SYSTEM_SIGS @NUM_SYSTEM_SIGS@
+#define MIN_SYSTEM_SIG  @MIN_SYSTEM_SIG@
+#define MAX_SYSTEM_SIG  @MAX_SYSTEM_SIG@
+#define NUM_SIGS        @NUM_SIGS@
+#define SIGMAP_SZ       @SIGMAP_SZ@
+
+@SIGNAL_DEFINITIONS@
+
+#define IS_SYSTEM_SIG(S) ((S) <= MAX_SYSTEM_SIG)
+
+#endif /* !_SYSTEM_SIGNALS_ */
