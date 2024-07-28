@@ -22,6 +22,7 @@
  */
 
 #include "gen.h"
+#include <stdlib.h>
 
 #ifndef DST_FILE
 #define DST_FILE "reg-mask.h"
@@ -48,7 +49,7 @@
 #  define EXN_MASK CONT_MASK
 #endif
 
-main ()
+int main ()
 {
     FILE	    *f;
 
