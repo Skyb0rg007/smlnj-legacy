@@ -1,0 +1,1 @@
+OBJECT [("a",STRING "First occurrence"),("b",INT 12),("a",STRING "Second occurrence")]
