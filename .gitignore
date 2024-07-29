@@ -197,6 +197,9 @@ base/system/smlnj/internal/version.sml
 /bin/
 /lib/
 
+# files created from testing
+*.output.actual
+
 # files created when building a distribution (macOS or Windows)
 osx-dist/smlnj.dst
 osx-dist/smlnj-*.pkg
