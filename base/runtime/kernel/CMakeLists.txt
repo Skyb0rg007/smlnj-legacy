@@ -26,5 +26,6 @@ target_link_libraries(kernel
     mach-dep
     sml-prim
     sml-clibraries
+    sml-clibs
 )
 

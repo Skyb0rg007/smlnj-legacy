@@ -5,6 +5,10 @@
  * Some useful user-level C functions.
  * Declared and registered on the C side by cutil-cfuns.h
  */
+#include <string.h>
+#ifdef DEBUG_C_CALLS
+#include <stdio.h>
+#endif
 
 char *ptos(void *p)
 {
