@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.29 FATAL_ERROR)
 project(smlnj
-    VERSION 110.99.5
+    VERSION 110.99.5.1
     DESCRIPTION "Compiler for the Standard ML '97 language"
     HOMEPAGE_URL "smlnj.org"
-    LANGUAGES C ASM)
+    LANGUAGES C ASM
+)
 
 include(GNUInstallDirs)
 
@@ -22,7 +23,11 @@ else()
     message(FATAL_ERROR "nyi")
 endif()
 
+# TODO: calculate this
+set(SML_TARGET "AMD64")
+
 # Determine arch and operating system
+# TODO: Implement this for more systems
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(SML_ARCH "x86_64")
 else()

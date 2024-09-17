@@ -114,15 +114,22 @@ add_subdirectory(config)
 add_subdirectory(memory)
 add_subdirectory(c-libs)
 add_subdirectory(gc)
-add_subdirectory(mp)
+# add_subdirectory(mp)
 add_subdirectory(mach-dep)
 
-add_library(sml-prim STATIC
-    objs/prim.s
+set_source_files_properties(mach-dep/${SML_TARGET}.prim.asm PROPERTIES
+    LANGUAGE ASM
+    COMPILE_DEFINITIONS _ASM_
+    COMPILE_OPTIONS "-x;assembler-with-cpp"
+)
+add_library(sml-prim OBJECT
+    mach-dep/${SML_TARGET}.prim.asm
 )
 target_link_libraries(sml-prim
     PRIVATE
     sml-runtime
+    sml-clibraries
+    kernel
     runtime-generated
 )
 

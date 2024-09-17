@@ -10,17 +10,17 @@ target_include_directories(sml-clibs
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_subdirectory(posix-os)
-add_subdirectory(smlnj-runtime)
-add_subdirectory(smlnj-signals)
-add_subdirectory(smlnj-sockets)
-add_subdirectory(smlnj-prof)
-add_subdirectory(smlnj-time)
-add_subdirectory(smlnj-date)
-add_subdirectory(smlnj-math)
-add_subdirectory(smlnj-mp)
-add_subdirectory(smlnj-ccalls)
-add_subdirectory(dl)
+add_subdirectory(posix-os)      # posix-os
+add_subdirectory(smlnj-runtime) # smlnj-runt
+add_subdirectory(smlnj-signals) # smlnj-sig
+add_subdirectory(smlnj-sockets) # smlnj-sock
+add_subdirectory(smlnj-prof)    # smlnj-prof
+add_subdirectory(smlnj-time)    # smlnj-time
+add_subdirectory(smlnj-date)    # smlnj-date
+add_subdirectory(smlnj-math)    # smlnj-math
+# add_subdirectory(smlnj-mp)      # smlnj-mp
+# add_subdirectory(smlnj-ccalls)  # smlnj-ccalls
+add_subdirectory(dl)            # unix-dynload
 if(UNIX)
     add_subdirectory(posix-error)
     add_subdirectory(posix-filesys)
@@ -40,8 +40,8 @@ add_library(sml-clibraries STATIC
 )
 target_link_libraries(sml-clibraries
     PRIVATE
-    sml-clibs
     PUBLIC
+    sml-clibs
     smlnj-prof
     smlnj-time
     smlnj-date
@@ -49,16 +49,20 @@ target_link_libraries(sml-clibraries
     smlnj-sig
     smlnj-sock
     smlnj-math
-
-    # TODO: Only on UNIX
-    posix-os
-    posix-io
-    posix-filesys
-    posix-procenv
-    posix-process
-    posix-sysdb
-    posix-signal
-    posix-tty
-    posix-error
-    unix-dynload
 )
+
+if(UNIX)
+    target_link_libraries(sml-clibraries
+        PUBLIC
+        posix-os
+        posix-io
+        posix-filesys
+        posix-procenv
+        posix-process
+        posix-sysdb
+        posix-signal
+        posix-tty
+        posix-error
+        unix-dynload
+    )
+endif()
