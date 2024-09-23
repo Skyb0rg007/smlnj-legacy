@@ -21,6 +21,11 @@ structure JSONDecode :> sig
     exception ArrayBounds of JSON.value * int
     exception ElemNotFound of JSON.value
 
+    datatype edge = KEY of string | IDX of int
+    type path = edge list
+
+    exception DecodeError of {path: path, cause: exn}
+
     val exnMessage : exn -> string
 
     type 'a decoder
@@ -135,9 +140,11 @@ structure JSONDecode :> sig
 
     datatype value = datatype JSON.value
 
-    datatype 'a decoder = D of value -> 'a
+    datatype 'a decoder = D of path * value -> 'a
 
-    fun decode (D d) jv = d jv
+    fun decode' (D d) (p, jv) = d (p, jv)
+
+    fun decode d jv = decode' d ([], jv)
 
     fun decodeString decoder s =
           (decode decoder (JSONParser.parse(JSONParser.openString s)))
@@ -145,50 +152,52 @@ structure JSONDecode :> sig
     fun decodeFile decoder fname =
           (decode decoder (JSONParser.parseFile fname))
 
-    fun asBool (BOOL b) = b
-      | asBool v = raise NotBool v
+    fun asBool (_, BOOL b) = b
+      | asBool (p, v) = raise DecodeError {path = p, cause = NotBool v}
     val bool = D asBool
 
-    fun asInt jv = (case jv
-           of INT n => Int.fromLarge n
-            | _ => raise NotInt jv
-          (* end case *))
+    fun asInt (p, INT n) = (Int.fromLarge n
+          handle e => raise DecodeError {path = p, cause = e})
+      | asInt (p, jv) = raise DecodeError {path = p, cause = NotInt jv}
     val int = D asInt
 
-    fun asIntInf (INT n) = n
-      | asIntInf v = raise NotInt v
+    fun asIntInf (_, INT n) = n
+      | asIntInf (p, v) = raise DecodeError {path = p, cause = NotInt v}
     val intInf = D asIntInf
 
-    fun asNumber (INT n) = Real.fromLargeInt n
-      | asNumber (FLOAT f) = f
-      | asNumber v = raise NotNumber v
+    fun asNumber (_, INT n) = Real.fromLargeInt n
+      | asNumber (_, FLOAT f) = f
+      | asNumber (p, v) = raise DecodeError {path = p, cause = NotNumber v}
     val number = D asNumber
 
-    fun asString (STRING s) = s
-      | asString v = raise NotString v
+    fun asString (_, STRING s) = s
+      | asString (p, v) = raise DecodeError {path = p, cause = NotString v}
     val string = D asString
 
-    fun null dflt = D(fn NULL => dflt | jv => raise NotNull jv)
+    fun null dflt = D
+          (fn (_, NULL) => dflt
+            | (p, jv) => raise DecodeError {path = p, cause = NotNull jv})
 
-    val raw = D(fn jv => jv)
+    val raw = D(fn (_, jv) => jv)
 
     fun nullable (D decoder) = let
-          fun decoder' NULL = NONE
-            | decoder' jv = SOME(decoder jv)
+          fun decoder' (_, NULL) = NONE
+            | decoder' (p, jv) = SOME (decoder (p, jv))
           in
             D decoder'
           end
 
     fun array (D elemDecoder) = let
-          fun decodeList ([], elems) = List.rev elems
-            | decodeList (jv::jvs, elems) = decodeList(jvs, elemDecoder jv :: elems)
-          fun decoder (ARRAY elems) = decodeList (elems, [])
-            | decoder jv = raise NotArray jv
+          fun decodeList (_, _, [], elems) = List.rev elems
+            | decodeList (i, p, jv::jvs, elems) =
+                decodeList(i + 1, p, jvs, elemDecoder (IDX i :: p, jv) :: elems)
+          fun decoder (p, ARRAY elems) = decodeList (0, p, elems, [])
+            | decoder (p, jv) = raise DecodeError {path = p, cause = NotArray jv}
           in
             D decoder
           end
 
-    fun try (D d) = D(fn jv => (SOME(d jv) handle _ => NONE))
+    fun try (D d) = D(fn jv => (SOME(d jv) handle DecodeError _ => NONE))
 
     fun seq (D d1) (D d2) = D(fn jv => let
           val v = d1 jv
@@ -197,22 +206,22 @@ structure JSONDecode :> sig
             k v
           end)
 
-    fun field key valueDecoder = D(fn jv => (case jv
+    fun field key valueDecoder = D(fn (p, jv) => (case jv
            of OBJECT fields => (case List.find (fn (l, v) => (l = key)) fields
-                 of SOME(_, v) => decode valueDecoder v
-                  | _ => raise FieldNotFound(jv, key)
+                 of SOME(_, v) => decode' valueDecoder (KEY key :: p, v)
+                  | _ => raise DecodeError {path = p, cause = FieldNotFound(jv, key)}
                 (* end case *))
-            | _ => raise NotObject jv
+            | _ => raise DecodeError {path = p, cause = NotObject jv}
           (* end case *)))
 
     fun reqField key valueDecoder k = seq (field key valueDecoder) k
 
     fun optField key (D valueDecoder) (D objDecoder) = let
-          fun objDecoder' optFld jv = (objDecoder jv) optFld
-          fun decoder jv = (case U.findField jv key
-                 of SOME NULL => objDecoder' NONE jv
-                  | SOME jv' => objDecoder' (SOME(valueDecoder jv')) jv
-                  | NONE => objDecoder' NONE jv
+          fun objDecoder' optFld (p, jv) = objDecoder (p, jv) optFld
+          fun decoder (p, jv) = (case U.findField jv key
+                 of SOME NULL => objDecoder' NONE (p, jv)
+                  | SOME jv' => objDecoder' (SOME(valueDecoder (KEY key :: p, jv'))) (p, jv)
+                  | NONE => objDecoder' NONE (p, jv)
                 (* end case *))
           in
             D decoder
@@ -220,35 +229,38 @@ structure JSONDecode :> sig
 
     fun dfltField key (D valueDecoder) dfltVal (D objDecoder) = let
           fun objDecoder' fld jv = (objDecoder jv) fld
-          fun decoder jv = (case U.findField jv key
-                 of SOME NULL => objDecoder' dfltVal jv
-                  | SOME jv' => objDecoder' (valueDecoder jv') jv
-                  | NONE => objDecoder' dfltVal jv
+          fun decoder (p, jv) = (case U.findField jv key
+                 of SOME NULL => objDecoder' dfltVal (p, jv)
+                  | SOME jv' => objDecoder' (valueDecoder (KEY key :: p, jv')) (p, jv)
+                  | NONE => objDecoder' dfltVal (p, jv)
                 (* end case *))
           in
             D decoder
           end
 
-    fun sub i (D d) = D(fn jv => (case jv
-           of jv as ARRAY arr => let
-                fun get (0, item::_) = d item
-                  | get (_, []) = raise ArrayBounds(jv, i)
+    fun sub i (D d) = D(fn (p, jv) => (case jv
+           of ARRAY arr => let
+                fun get (0, item::_) = d (IDX i :: p, item)
+                  | get (_, []) = raise DecodeError {path = p, cause = ArrayBounds(jv, i)}
                   | get (i, _::r) = get (i-1, r)
                 in
-                  if (i < 0) then raise ArrayBounds(jv, i) else get (i, arr)
+                  if (i < 0)
+                    then raise DecodeError {path = p, cause = ArrayBounds(jv, i)}
+                    else get (i, arr)
                 end
-            | _ => raise NotArray jv
+            | _ => raise DecodeError {path = p, cause = NotArray jv}
           (* end case *)))
 
-    fun at path (D d) = D(fn jv => d (U.get(jv, path)))
+    fun at path (D d) = D(fn (p, jv) => d (p, U.get(jv, path)))
+      (* TODO: handle paths *)
 
     fun succeed x = D(fn _ => x)
 
-    fun fail msg = D(fn jv => raise Failure(msg, jv))
+    fun fail msg = D(fn (p, jv) => raise DecodeError {path = p, cause = Failure(msg, jv)})
 
-    fun andThen f (D d) = D(fn jv => decode (f (d jv)) jv)
+    fun andThen f (D d) = D(fn jv => decode' (f (d jv)) jv)
 
-    fun orElse (D d1, D d2) = D(fn jv => (d1 jv handle _ => d2 jv))
+    fun orElse (D d1, D d2) = D(fn jv => (d1 jv handle DecodeError _ => d2 jv))
 
     (* `choose [d1, ..., dn]` is equivalent to
      * `orElse(d1, orElse(d2, ..., orElse(dn, fail "no choice") ... ))`

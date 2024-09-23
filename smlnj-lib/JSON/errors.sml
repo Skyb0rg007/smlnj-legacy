@@ -22,6 +22,27 @@ structure Errors =
     exception ArrayBounds of JSON.value * int
     exception ElemNotFound of JSON.value
 
+    datatype edge = KEY of string | IDX of int
+    type path = edge list
+
+    exception DecodeError of {path: path, cause: exn}
+
+    (* Render as a JSON Pointer (RFC 6901) *)
+    fun pathToString path = let
+          val keyToString = String.translate
+                (fn #"~" => "~0"
+                  | #"/" => "~1"
+                  | c => String.str c)
+          fun idxToString i =
+                if i < 0
+                  then raise Fail ("invalid IDX " ^ Int.toString i)
+                  else Int.toString i
+          fun edgeToString (KEY k) = "/" ^ keyToString k
+            | edgeToString (IDX i) = "/" ^ idxToString i
+          in
+            String.concat (List.revMap edgeToString path)
+          end
+
     (* map the above exceptions to a message string; we use `General.exnMessage`
      * for other exceptions.
      *)
@@ -68,6 +89,10 @@ structure Errors =
 	      | ElemNotFound v => String.concat[
 		    "no matching element found in ", v2s v
 		  ]
+              | DecodeError {path, cause} => String.concat[
+                    "decode error at ", pathToString path, ", ",
+                    exnMessage cause
+                  ]
 	      | _ => General.exnMessage exn
 	    (* end case *)
 	  end
