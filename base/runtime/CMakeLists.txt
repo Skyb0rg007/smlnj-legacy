@@ -135,7 +135,3 @@ target_link_libraries(sml-prim
 
 add_subdirectory(kernel)
 
-# add_executable(runtime
-#     kernel/main.c
-# )
-

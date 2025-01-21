@@ -25,6 +25,7 @@ add_library(gc STATIC
     old-literals.c
     record-ops.c
     writer.c
+    init-gc.c
     # gc-stats.c
     # mp-gc.c
 )

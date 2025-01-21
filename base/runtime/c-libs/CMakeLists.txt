@@ -32,7 +32,7 @@ if(UNIX)
     add_subdirectory(posix-tty)
 endif()
 
-add_library(sml-clibraries STATIC
+add_library(sml-clibraries OBJECT
     clib-list.h
 
     c-libraries.c

@@ -22,6 +22,7 @@ add_library(smlnj-runt STATIC
     record-concat.c
     sysinfo.c
     setitimer.c
+    gc-counter.c
 )
 target_link_libraries(smlnj-runt
     PRIVATE

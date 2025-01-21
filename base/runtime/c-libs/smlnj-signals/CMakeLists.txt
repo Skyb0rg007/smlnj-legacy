@@ -13,4 +13,5 @@ add_library(smlnj-sig STATIC
 target_link_libraries(smlnj-sig
     PRIVATE
     sml-clibs
+    mach-dep
 )

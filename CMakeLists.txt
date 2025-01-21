@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.29 FATAL_ERROR)
 project(smlnj
-    VERSION 110.99.5.1
+    VERSION 110.99.7.1
     DESCRIPTION "Compiler for the Standard ML '97 language"
     HOMEPAGE_URL "smlnj.org"
     LANGUAGES C ASM
