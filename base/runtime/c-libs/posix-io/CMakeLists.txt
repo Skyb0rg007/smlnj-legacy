@@ -1,3 +1,11 @@
+## base/runtime/c-libs/posix-io/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - posix-io
+##     SML/NJ C library that defines I/O functions
 
 add_library(posix-io STATIC
     cfun-list.h

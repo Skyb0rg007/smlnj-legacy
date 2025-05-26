@@ -1,3 +1,11 @@
+## base/runtime/gc/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - gc
+##     SML/NJ garbage collection implementation
 
 add_library(gc STATIC
     heap.h
@@ -12,10 +20,12 @@ add_library(gc STATIC
     call-gc.c
     export-heap.c
     flip.c
+    gc-stats.c
     gc-util.c
     heap-in-util.c
     heap-out-util.c
     import-heap.c
+    init-gc.c
     init-gc.c
     major-gc.c
     mem-writer.c
@@ -25,18 +35,19 @@ add_library(gc STATIC
     old-literals.c
     record-ops.c
     writer.c
-    init-gc.c
-    # gc-stats.c
     # mp-gc.c
 )
-
 target_include_directories(gc
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_link_libraries(gc
+    PRIVATE
+    sml-runtime
+    runtime-generated
 )
 
 if(CHECK_HEAP)
     target_sources(gc check-heap.c)
 endif()
 
-target_link_libraries(gc PRIVATE sml-runtime runtime-generated)

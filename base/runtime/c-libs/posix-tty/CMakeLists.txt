@@ -1,3 +1,11 @@
+## base/runtime/c-libs/posix-tty/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - posix-tty
+##     SML/NJ C library that defines tty functions
 
 add_library(posix-tty STATIC
     cfun-list.h

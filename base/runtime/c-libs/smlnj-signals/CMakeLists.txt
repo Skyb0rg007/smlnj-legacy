@@ -1,7 +1,15 @@
+## base/runtime/c-libs/smlnj-signals/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - smlnj-sig
+##     SML/NJ C library that defines signal functions
 
 add_library(smlnj-sig STATIC
-    cfun-proto-list.h
     cfun-list.h
+    cfun-proto-list.h
     getsigmask.c
     getsigstate.c
     listsignals.c

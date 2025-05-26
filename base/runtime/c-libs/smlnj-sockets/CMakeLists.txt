@@ -1,16 +1,24 @@
+## base/runtime/c-libs/smlnj-sockets/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - smlnj-sock
+##     SML/NJ C library that defines socket functions
 
 add_library(smlnj-sock STATIC
-    cfun-proto-list.h
     cfun-list.h
-    sockets-osdep.h
+    cfun-proto-list.h
     sock-util.h
+    sockets-osdep.h
 
     # NetDB
-    gethostname.c
-    getnetbyname.c
-    getnetbyaddr.c
-    gethostbyname.c
     gethostbyaddr.c
+    gethostbyname.c
+    gethostname.c
+    getnetbyaddr.c
+    getnetbyname.c
     getprotbyname.c
     getprotbynum.c
     getservbyname.c
@@ -27,13 +35,13 @@ add_library(smlnj-sock STATIC
     ctlRCVBUF.c
     ctlREUSEADDR.c
     ctlSNDBUF.c
-    getERROR.c
-    getTYPE.c
-    setNBIO.c
-    getNREAD.c
     getATMARK.c
+    getERROR.c
+    getNREAD.c
+    getTYPE.c
     getpeername.c
     getsockname.c
+    setNBIO.c
 
     # Socket
     accept.c
@@ -41,32 +49,32 @@ add_library(smlnj-sock STATIC
     close.c
     connect.c
     listen.c
-    socket.c
     shutdown.c
+    socket.c
 
     # IO
     recv.c
     recvbuf.c
-    recvfrom.c
     recvbuffrom.c
+    recvfrom.c
     sendbuf.c
     sendbufto.c
 
     # Miscellaneous
-    list-addr-families.c
-    list-sock-types.c
+    from-inetaddr.c
     getaddrfamily.c
     inetany.c
-    from-inetaddr.c
+    list-addr-families.c
+    list-sock-types.c
     to-inetaddr.c
 
     # Util
+    tbl-addr-family.c
+    tbl-sock-type.c
     util-mkhostent.c
     util-mknetent.c
     util-mkservent.c
     util-sockopt.c
-    tbl-addr-family.c
-    tbl-sock-type.c
 
     smlnj-sock-lib.c
 )

@@ -1,3 +1,11 @@
+## base/runtime/kernel/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - kernel
+##     The SML/NJ runtime executable
 
 add_executable(kernel
     bill-os.c
@@ -15,7 +23,6 @@ add_executable(kernel
     unix-timers.c
     # standalone.c
 )
-
 target_link_libraries(kernel
     PUBLIC
     sml-runtime

@@ -1,3 +1,11 @@
+## base/runtime/c-libs/smlnj-date/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - smlnj-date
+##     SML/NJ C library that defines date functions
 
 add_library(smlnj-date STATIC
     cfun-proto-list.h

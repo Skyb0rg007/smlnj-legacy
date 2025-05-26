@@ -1,3 +1,11 @@
+## base/runtime/c-libs/posix-filesys/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - posix-filesys
+##     SML/NJ C library that defines filesystem functions
 
 add_library(posix-filesys STATIC
     cfun-list.h

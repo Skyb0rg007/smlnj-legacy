@@ -1,3 +1,11 @@
+## base/runtime/c-libs/smlnj-math/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - smlnj-math
+##     SML/NJ C library that defines math functions
 
 add_library(smlnj-math STATIC
     cfun-proto-list.h

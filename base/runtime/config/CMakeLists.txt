@@ -1,3 +1,28 @@
+## base/runtime/config/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - runtime-generated
+##     Interface library that adds generated header files to the include path
+##
+## The following CMake targets should not be referenced outside this file:
+## - gen-common
+##     Library that includes common utilities for compile-time generators
+## - gen-regmask
+##     Executable that generates reg-mask.h
+## - gen-signals
+##     Executable that generates system-signals.h
+## - gen-sizes
+##     Executable that generates ml-sizes.h
+## - gen-offsets
+##     Executable that generates mlstate-offsets.h
+## - gen-sigtbl
+##     Executable that generates unix-sigtbl.c or win32-sigtbl.c
+##
+## Note: These generators should be replaced with CMake tests
+## and substitutions.
 
 # Common build options for header file generators
 add_library(gen-common EXCLUDE_FROM_ALL
@@ -108,7 +133,7 @@ add_custom_command(
     COMMAND $<TARGET_FILE:gen-sigtbl>
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )
-# Make the sigtbl.c file a header file to prevent compilation
+# Mark (unix|win32)-sigtbl.c as a header file to prevent compilation
 set_source_files_properties(
     ${CMAKE_CURRENT_BINARY_DIR}/${sigtbl_source}
     DIRECTORY ${CMAKE_SOURCE_DIR}

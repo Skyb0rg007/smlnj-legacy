@@ -1,3 +1,13 @@
+## base/runtime/c-libs/posix-procenv/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - posix-procenv
+##     SML/NJ C library that defines process environment functions
+##
+## TODO: Use the C preprocessor specified by CMake instead of /lib/cpp
 
 add_library(posix-procenv STATIC
     cfun-list.h
@@ -40,8 +50,8 @@ target_include_directories(posix-procenv
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ml_sysconf.h"
     COMMAND
-    ${CMAKE_COMMAND} -E env VERSION=${PROJECT_VERSION}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../config/gen-posix-names.sh _SC_ ml_sysconf.h
+        ${CMAKE_COMMAND} -E env VERSION="v-${SML_ARCH}-${SML_OPSYS}"
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../config/gen-posix-names.sh _SC_ ml_sysconf.h
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 

@@ -1,28 +1,36 @@
+## base/runtime/c-libs/smlnj-runtime/CMakeLists.txt
+##
+## COPYRIGHT (c) 2025 Skye Soss
+## All rights reserved.
+##
+## Defines the following public CMake targets:
+## - smlnj-runt
+##     SML/NJ C library that defines utilities like `argv` and `setIntTimer`
 
 add_library(smlnj-runt STATIC
-    cfun-proto-list.h
     cfun-list.h
-    smlnj-runt-lib.c
+    cfun-proto-list.h
     alloc-code.c
     argv.c
-    raw-argv.c
-    shift-argv.c
-    cmd-name.c
     blast-in.c
     blast-out.c
+    cmd-name.c
     debug.c
     dummy.c
-    export-heap.c
     export-fun.c
+    export-heap.c
+    gc-counter.c
     gc-ctl.c
     itick.c
     mkexec.c
     mkliterals.c
-    record1.c
+    raw-argv.c
     record-concat.c
-    sysinfo.c
+    record1.c
     setitimer.c
-    gc-counter.c
+    shift-argv.c
+    smlnj-runt-lib.c
+    sysinfo.c
 )
 target_link_libraries(smlnj-runt
     PRIVATE
