@@ -9,7 +9,7 @@
 #define _CARD_MAP_
 
 #ifndef BIT_CARDS
-typedef struct {		      /* A dirty card map */
+typedef struct card_map {	      /* A dirty card map */
     ml_val_t		*baseAddr;	/* The base address of the mapped region */
     Word_t		numCards;	/* The number of cards covered by the map */
     int			mapSzB;		/* The number of bytes allocated for this */
@@ -81,7 +81,7 @@ typedef struct {		      /* A dirty card map */
  * think that this is because updates are less frequent, so that the savings
  * on marking cards dirty doesn't offset the added cost of sweeping.
  */
-typedef struct {		      /* A dirty card map */
+typedef struct card_map {	      /* A dirty card map */
     ml_val_t		*baseAddr;	/* The base address of the mapped region */
     Word_t		numCards;	/* The number of cards covered by the map */
     int			mapSzB;		/* The number of bytes allocated for this */

@@ -36,6 +36,7 @@ target_compile_definitions(sml-runtime
 target_compile_options(sml-runtime
     INTERFACE
         # -Wall
+        # -O2
 )
 
 add_subdirectory(config)

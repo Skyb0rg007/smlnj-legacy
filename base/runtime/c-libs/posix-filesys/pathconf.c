@@ -32,11 +32,11 @@
   * form but without the prefix, e.g., to lookup _PC_LINK_MAX,
   * use pathconf (path, "LINK_MAX")
   */
-static name_val_t values[] = {
+static name_val_t pc_values[] = {
 #include "ml_pathconf.h"
 };
 
-#define NUMELMS ((sizeof values)/(sizeof (name_val_t)))
+#define PC_NUMELMS ((sizeof pc_values)/(sizeof (name_val_t)))
 
 /* mkValue : int -> SysWord.word option
  *
@@ -74,7 +74,7 @@ ml_val_t _ml_P_FileSys_pathconf (ml_state_t *msp, ml_val_t arg)
     char	*pathname = STR_MLtoC(mlPathname);
     name_val_t	*attr;
 
-    attr = _ml_posix_nv_lookup (STR_MLtoC(mlAttr), values, NUMELMS);
+    attr = _ml_posix_nv_lookup (STR_MLtoC(mlAttr), pc_values, PC_NUMELMS);
     if (!attr) {
 	errno = EINVAL;
 	return RAISE_SYSERR(msp, -1);
@@ -102,7 +102,7 @@ ml_val_t _ml_P_FileSys_fpathconf (ml_state_t *msp, ml_val_t arg)
     ml_val_t	mlAttr = REC_SEL(arg, 1);
     name_val_t  *attr;
 
-    attr = _ml_posix_nv_lookup (STR_MLtoC(mlAttr), values, NUMELMS);
+    attr = _ml_posix_nv_lookup (STR_MLtoC(mlAttr), pc_values, PC_NUMELMS);
     if (!attr) {
 	errno = EINVAL;
 	return RAISE_SYSERR(msp, -1);

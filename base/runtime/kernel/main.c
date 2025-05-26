@@ -21,6 +21,7 @@
 #endif
 
 FILE		*DebugF = NULL;
+FILE		*StatsF = NULL;
 
 /* Runtime globals */
 bool_t		SilentLoad = TRUE;

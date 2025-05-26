@@ -8,7 +8,19 @@
 ##     SML/NJ garbage collection implementation
 
 add_library(gc STATIC
+    addr-hash.h
+    card-map.h
+    heap-input.h
     heap.h
+    arena-id.h
+    copy-loop.h
+    heap-monitor.h
+    ml-heap-image.h
+    blast-out.h
+    gc-stats.h
+    heap-output.h
+    writer.h
+
 
     addr-hash.c
     big-objects.c

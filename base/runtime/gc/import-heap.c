@@ -55,7 +55,7 @@ PVT void PrintRelocMap (bo_region_reloc_t *r)
 /* local routines */
 PVT void ReadHeap (inbuf_t *bp, ml_heap_hdr_t *hdr, ml_state_t *msp, ml_val_t *externs);
 PVT bigobj_desc_t *AllocBODesc (bigobj_desc_t *, bigobj_hdr_t *, bo_region_reloc_t *);
-PVT void RepairHeap (
+PVT void RepairImportedHeap (
 	heap_t *, bibop_t, Addr_t [MAX_NUM_GENS][NUM_ARENAS],
 	addr_tbl_t *, ml_val_t *);
 PVT ml_val_t RepairWord (
@@ -400,7 +400,7 @@ PVT void ReadHeap (inbuf_t *bp, ml_heap_hdr_t *hdr, ml_state_t *msp, ml_val_t *e
 	}
     }
 
-    RepairHeap (heap, oldBIBOP, addrOffset, boRegionTbl, externs);
+    RepairImportedHeap (heap, oldBIBOP, addrOffset, boRegionTbl, externs);
 
 #ifdef CHECK_HEAP
     SayDebug ("Checking imported heap...\n");
@@ -531,12 +531,12 @@ PVT bigobj_desc_t *AllocBODesc (
 
 } /* end of AllocBODesc */
 
-/* RepairHeap:
+/* RepairImportedHeap:
  *
  * Scan the heap, replacing external references with their addresses and
  * adjusting pointers.
  */
-PVT void RepairHeap (
+PVT void RepairImportedHeap (
     heap_t *heap,
     bibop_t oldBIBOP,
     Addr_t addrOffset[MAX_NUM_GENS][NUM_ARENAS],
@@ -590,9 +590,11 @@ PVT void RepairHeap (
 	RepairArena(RECORD_INDX);
 	RepairArena(PAIR_INDX);
 	RepairArena(ARRAY_INDX);
+#undef RepairArena
+#undef MARK
     }
 
-} /* end of RepairHeap */
+} /* end of RepairImportedHeap */
 
 /* RepairWord:
  */

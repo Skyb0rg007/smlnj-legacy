@@ -9,7 +9,7 @@
 #include "sock-util.h"
 
 /** The table of socket-type names **/
-PVT sys_const_t	tbl[] = {
+PVT sys_const_t sock_type_tbl[] = {
 	{SOCK_STREAM,		"STREAM"},
 	{SOCK_DGRAM,		"DGRAM"},
 #ifdef SOCK_RAW
@@ -24,7 +24,7 @@ PVT sys_const_t	tbl[] = {
     };
 
 sysconst_tbl_t	_Sock_Type = {
-	sizeof(tbl) / sizeof(sys_const_t),
-	tbl
+	sizeof(sock_type_tbl) / sizeof(sys_const_t),
+	sock_type_tbl
     };
 

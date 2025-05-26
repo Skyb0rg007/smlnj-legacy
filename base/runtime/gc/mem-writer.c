@@ -16,12 +16,12 @@ typedef struct buffer {
     Byte_t	*top;
 } wr_buffer_t;
 
-PVT void Put (writer_t *wr, Word_t w);
-PVT void Write (writer_t *wr, const void *data, Addr_t nbytes);
-PVT void Flush (writer_t *wr);
-PVT off_t Tell (writer_t *wr);
-PVT void Seek (writer_t *wr, off_t offset);
-PVT void Free (writer_t *wr);
+PVT void MemPut (writer_t *wr, Word_t w);
+PVT void MemWrite (writer_t *wr, const void *data, Addr_t nbytes);
+PVT void MemFlush (writer_t *wr);
+PVT off_t MemTell (writer_t *wr);
+PVT void MemSeek (writer_t *wr, off_t offset);
+PVT void MemFree (writer_t *wr);
 
 #define BufOf(wr)	((wr_buffer_t *)((wr)->data))
 
@@ -42,20 +42,20 @@ writer_t *WR_OpenMem (Byte_t *data, Addr_t len)
     wr = NEW_OBJ(writer_t);
     wr->errFlg	= FALSE;
     wr->data	= (void *)bp;
-    wr->putWord	= Put;
-    wr->write	= Write;
-    wr->flush	= Flush;
-    wr->tell	= Tell;
-    wr->seek	= Seek;
-    wr->free	= Free;
+    wr->putWord	= MemPut;
+    wr->write	= MemWrite;
+    wr->flush	= MemFlush;
+    wr->tell	= MemTell;
+    wr->seek	= MemSeek;
+    wr->free	= MemFree;
 
     return wr;
 
 } /* end of WR_OpenMem */
 
-/* Put:
+/* MemPut:
  */
-PVT void Put (writer_t *wr, Word_t w)
+PVT void MemPut (writer_t *wr, Word_t w)
 {
     wr_buffer_t	*bp = BufOf(wr);
 
@@ -64,11 +64,11 @@ PVT void Put (writer_t *wr, Word_t w)
     *((Word_t *)(bp->next)) = w;
     bp->next += WORD_SZB;
 
-} /* end of Put */
+} /* end of MemPut */
 
-/* Write:
+/* MemWrite:
  */
-PVT void Write (writer_t *wr, const void *data, Addr_t nbytes)
+PVT void MemWrite (writer_t *wr, const void *data, Addr_t nbytes)
 {
     wr_buffer_t	*bp = BufOf(wr);
 
@@ -80,37 +80,37 @@ PVT void Write (writer_t *wr, const void *data, Addr_t nbytes)
     memcpy (bp->next, data, nbytes);
     bp->next += nbytes;
 
-} /* end of Write */
+} /* end of MemWrite */
 
-/* Flush:
+/* MemFlush:
  */
-PVT void Flush (writer_t *wr)
+PVT void MemFlush (writer_t *wr)
 {
     wr_buffer_t	*bp = BufOf(wr);
 
     ASSERT(bp->next <= bp->top);
 
-} /* end of Flush */
+} /* end of MemFlush */
 
-/* Tell:
+/* MemTell:
  */
-PVT off_t Tell (writer_t *wr)
+PVT off_t MemTell (writer_t *wr)
 {
     Die ("Tell not supported on memory writers");
 
-} /* end of Tell */
+} /* end of MemTell */
 
-/* Seek:
+/* MemSeek:
  */
-PVT void Seek (writer_t *wr, off_t offset)
+PVT void MemSeek (writer_t *wr, off_t offset)
 {
     Die ("Tell not supported on memory writers");
 
-} /* end of Seek */
+} /* end of MemSeek */
 
-/* Free:
+/* MemFree:
  */
-PVT void Free (writer_t *wr)
+PVT void MemFree (writer_t *wr)
 {
     wr_buffer_t	*bp = BufOf(wr);
 
@@ -119,4 +119,4 @@ PVT void Free (writer_t *wr)
     FREE (BufOf(wr));
     FREE (wr);
 
-} /* end of Free */
+} /* end of MemFree */

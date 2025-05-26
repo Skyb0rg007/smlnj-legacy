@@ -4,6 +4,9 @@
  * All rights reserved.
  */
 
+#ifndef _GEN_UNIX_SIGNALS_
+#define _GEN_UNIX_SIGNALS_
+
 typedef struct {
     int		    sig;	/* the UNIX signal code */
     char	    *sigName;	/* the symbolic name of the signal (i.e., */
@@ -21,3 +24,4 @@ typedef struct {
 
 extern sig_info_t *SortSignalTbl ();
 
+#endif

@@ -9,18 +9,18 @@
 #include "ml-base.h"
 #include "addr-hash.h"
 
-typedef struct item {	    /* items in the hash table */
+typedef struct addr_tbl_item {	    /* items in the hash table */
     Addr_t	    addr;	/* the address the object is keyed on */
     void	    *obj;	/* the object */
-    struct item	    *next;	/* the next item in the bucket */
-} item_t;
+    struct addr_tbl_item	    *next;	/* the next item in the bucket */
+} addr_tbl_item_t;
 
 struct addr_tbl {
     int		    ignoreBits;	/* how many low bits of a hashed address are ignored */
     int		    size;	/* number of buckets in the table; will be a power of 2 */
     int		    numItems;	/* the number of items in the table */
     Addr_t	    mask;	/* mask to form table index (== size-1) */
-    item_t	    **buckets;	/* array of buckets */
+    addr_tbl_item_t	    **buckets;	/* array of buckets */
 };
 
 STATIC_INLINE int _AddrHash (addr_tbl_t *tbl, Addr_t addr)
@@ -45,13 +45,13 @@ addr_tbl_t *MakeAddrTbl (int ignoreBits, int size)
 	continue;
 
     tbl			= NEW_OBJ(addr_tbl_t);
-    tbl->buckets	= NEW_VEC(item_t *, nBuckets);
+    tbl->buckets	= NEW_VEC(addr_tbl_item_t *, nBuckets);
     tbl->ignoreBits	= ignoreBits;
     tbl->size		= nBuckets;
     tbl->mask		= nBuckets-1;
     tbl->numItems	= 0;
     for (i = 0;  i < nBuckets;  i++)
-	tbl->buckets[i] = NIL(item_t *);
+	tbl->buckets[i] = NIL(addr_tbl_item_t *);
 
     return tbl;
 
@@ -64,14 +64,14 @@ addr_tbl_t *MakeAddrTbl (int ignoreBits, int size)
 void AddrTblInsert (addr_tbl_t *tbl, Addr_t addr, void *obj)
 {
     int		h = HASH(tbl,addr);
-    item_t	*p;
+    addr_tbl_item_t	*p;
 
     ASSERT((0 <= h) && (h < tbl->size));
-    for (p = tbl->buckets[h];  (p != NIL(item_t *)) && (p->addr != addr);  p = p->next) {
+    for (p = tbl->buckets[h];  (p != NIL(addr_tbl_item_t *)) && (p->addr != addr);  p = p->next) {
 	continue;
     }
-    if (p == NIL(item_t *)) {
-	p		= NEW_OBJ(item_t);
+    if (p == NIL(addr_tbl_item_t *)) {
+	p		= NEW_OBJ(addr_tbl_item_t);
 	p->addr		= addr;
 	p->obj		= obj;
 	p->next		= tbl->buckets[h];
@@ -92,13 +92,13 @@ void AddrTblInsert (addr_tbl_t *tbl, Addr_t addr, void *obj)
 void *AddrTblLookup (addr_tbl_t *tbl, Addr_t addr)
 {
     int		h = HASH(tbl,addr);
-    item_t	*p;
+    addr_tbl_item_t	*p;
 
     ASSERT((0 <= h) && (h < tbl->size));
-    for (p = tbl->buckets[h];  (p != NIL(item_t *)) && (p->addr != addr);  p = p->next)
+    for (p = tbl->buckets[h];  (p != NIL(addr_tbl_item_t *)) && (p->addr != addr);  p = p->next)
 	continue;
 
-    if (p == NIL(item_t *))
+    if (p == NIL(addr_tbl_item_t *))
 	return NIL(void *);
     else
 	return p->obj;
@@ -112,10 +112,10 @@ void *AddrTblLookup (addr_tbl_t *tbl, Addr_t addr)
 void AddrTblApply (addr_tbl_t *tbl, void *clos, void (*f) (Addr_t, void *, void *))
 {
     int		i;
-    item_t	*p;
+    addr_tbl_item_t	*p;
 
     for (i = 0;  i < tbl->size;  i++) {
-	for (p = tbl->buckets[i];  p != NIL(item_t *);  p = p->next) {
+	for (p = tbl->buckets[i];  p != NIL(addr_tbl_item_t *);  p = p->next) {
 	    (*f) (p->addr, clos, p->obj);
 	}
     }
@@ -130,10 +130,10 @@ void AddrTblApply (addr_tbl_t *tbl, void *clos, void (*f) (Addr_t, void *, void 
 void FreeAddrTbl (addr_tbl_t *tbl, bool_t freeObjs)
 {
     int		i;
-    item_t	*p, *q;
+    addr_tbl_item_t	*p, *q;
 
     for (i = 0;  i < tbl->size;  i++) {
-	for (p = tbl->buckets[i];  p != NIL(item_t *);  ) {
+	for (p = tbl->buckets[i];  p != NIL(addr_tbl_item_t *);  ) {
 	    q = p->next;
 	    if (freeObjs) {
 		FREE (p->obj);

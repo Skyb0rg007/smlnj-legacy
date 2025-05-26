@@ -16,8 +16,8 @@
 #include "cntr.h"
 #include "gc-stats.h"
 
-FILE			*DebugF;
-FILE			*StatsF;
+extern FILE			*DebugF;
+extern FILE			*StatsF;
 
 /** Virtual memory statistics **/
 #ifdef VM_STATS

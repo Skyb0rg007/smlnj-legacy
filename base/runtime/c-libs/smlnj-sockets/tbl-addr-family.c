@@ -9,7 +9,7 @@
 #include "sock-util.h"
 
 /** The table of address-family names **/
-PVT sys_const_t	tbl[] = {
+PVT sys_const_t	addr_fam_tbl[] = {
 	{AF_UNIX,	"UNIX"},
 	{AF_INET,	"INET"},
 #ifdef AF_IMPLINK
@@ -87,6 +87,6 @@ PVT sys_const_t	tbl[] = {
     };
 
 sysconst_tbl_t	_Sock_AddrFamily = {
-	sizeof(tbl) / sizeof(sys_const_t),
-	tbl
+	sizeof(addr_fam_tbl) / sizeof(sys_const_t),
+	addr_fam_tbl
     };

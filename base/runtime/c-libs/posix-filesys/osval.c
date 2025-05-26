@@ -17,7 +17,7 @@
 #include "../posix-error/posix-name-val.h"
 
 /* NOTE: the following table must be in alphabetical order!!! */
-PVT name_val_t values [] = {
+PVT name_val_t os_values [] = {
   {"A_EXEC",	   X_OK},
   {"A_FILE",       F_OK},
   {"A_READ",       R_OK},
@@ -62,7 +62,7 @@ PVT name_val_t values [] = {
   {"ixusr",        S_IXUSR},
 };
 
-#define NUMELMS ((sizeof values)/(sizeof (name_val_t)))
+#define OS_NUMELMS ((sizeof os_values)/(sizeof (name_val_t)))
 
 /* _ml_P_FileSys_osval : string -> int
  *
@@ -72,7 +72,7 @@ ml_val_t _ml_P_FileSys_osval (ml_state_t *msp, ml_val_t arg)
 {
     name_val_t      *res;
 
-    res = _ml_posix_nv_lookup (STR_MLtoC(arg), values, NUMELMS);
+    res = _ml_posix_nv_lookup (STR_MLtoC(arg), os_values, OS_NUMELMS);
     if (res)
 	return INT_CtoML(res->val);
     else {
@@ -80,3 +80,4 @@ ml_val_t _ml_P_FileSys_osval (ml_state_t *msp, ml_val_t arg)
     }
 
 } /* end of _ml_P_FileSys_osval */
+

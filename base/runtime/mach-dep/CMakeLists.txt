@@ -49,8 +49,9 @@ set_source_files_properties(
 )
 
 # sml-prim - primitive operations
+string(TOUPPER "${SML_ARCH}" target)
 add_library(sml-prim OBJECT
-    ${SML_TARGET}.prim.asm
+    ${target}.prim.asm
 )
 target_link_libraries(sml-prim
     PRIVATE

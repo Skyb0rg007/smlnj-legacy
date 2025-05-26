@@ -38,7 +38,7 @@
 PVT status_t ExportImage (ml_state_t *msp, int kind, FILE *file);
 PVT export_table_t *ScanHeap (heap_t *heap);
 PVT status_t WriteHeap (writer_t *wr, heap_t *heap);
-PVT void RepairHeap (export_table_t *tbl, heap_t *heap);
+PVT void RepairExportHeap (export_table_t *tbl, heap_t *heap);
 
 
 /* ExportHeapImage:
@@ -157,7 +157,7 @@ PVT status_t ExportImage (ml_state_t *msp, int kind, FILE *file)
 
   done:;
     if (kind != EXPORT_FN_IMAGE)
-	RepairHeap (exportTbl, heap);
+	RepairExportHeap (exportTbl, heap);
 
     WR_Free(wr);
 
@@ -355,9 +355,9 @@ PrintRegionMap(rp);
 
 } /* end of WriteHeap. */
 
-/* RepairHeap:
+/* RepairExportHeap:
  */
-PVT void RepairHeap (export_table_t *tbl, heap_t *heap)
+PVT void RepairExportHeap (export_table_t *tbl, heap_t *heap)
 {
     int			i;
 
@@ -383,8 +383,9 @@ PVT void RepairHeap (export_table_t *tbl, heap_t *heap)
 	RepairArena(RECORD_INDX);
 	RepairArena(PAIR_INDX);
 	RepairArena(ARRAY_INDX);
+#undef RepairArena
     }
 
     FreeExportTbl (tbl);
 
-} /* end of RepairHeap */
+} /* end of RepairExportHeap */
